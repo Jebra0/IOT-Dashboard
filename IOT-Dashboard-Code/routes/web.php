@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\LogUserActivity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -11,7 +12,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-//for test//////////////////////////////////
+//for test/////////////////////////////////
 Route::get('/demo-request', function() {
     return response()->json(Auth::user());
 });
@@ -22,7 +23,7 @@ Route::post('/demo-post', function (Request $request) {
 ///////////// Dashboard ////////////////
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', LogUserActivity::class])->name('dashboard');
 
 Route::get('/dashData', [DashboardController::class, 'dashboard'])
     ->middleware(['auth', 'verified']);

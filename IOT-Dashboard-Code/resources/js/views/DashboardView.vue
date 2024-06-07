@@ -43,7 +43,7 @@
             >
                 <td class="text-center">{{ user.name }}</td>
                 <td class="text-center">{{ user.email }}</td>
-                <td class="text-center"><v-icon>mdi-circle</v-icon></td>
+                <td class="text-center"><i class="red-circle"></i></td>
             </tr>
             </tbody>
         </v-table>
@@ -70,10 +70,21 @@ export default{
         LineChart,
     },
     data() {
+        const now = new Date();
+        now.setHours(now.getHours() - 3); // Adding 2 hours
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so we add 1
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const formattedNow = `${year}-${month}-${day} ${hours}:${minutes}`;
+
         return {
             users: {},
 
             loaded: false,
+
+            now: formattedNow,
 
             PHdata: {
                 labels: [],
@@ -155,3 +166,18 @@ export default{
 }
 
 </script>
+<style>
+.circle, .green-circle, .red-circle{
+    margin-left: 100px;
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+}
+.green-circle{
+    background-color: #1b8918;
+}
+.red-circle{
+    background-color: #e52d2d;
+}
+</style>
