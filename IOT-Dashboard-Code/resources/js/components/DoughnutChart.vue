@@ -1,5 +1,5 @@
 <template>
-    <Doughnut :data="data" :options="options" />
+    <Doughnut :data="chartData" :options="chartOptions" />
 </template>
 
 <script>
@@ -12,21 +12,14 @@ export default {
     components: {
         Doughnut
     },
-    data() {
-        return {
-            data: {
-                labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
-                datasets: [
-                    {
-                        backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-                        data: [40, 20, 80, 10]
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
+    props: {
+        chartData: {
+            type: Object,
+            required: true
+        },
+        chartOptions: {
+            type: String,
+            required: true
         }
     }
 }

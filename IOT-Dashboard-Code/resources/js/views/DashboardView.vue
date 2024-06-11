@@ -1,5 +1,5 @@
 <template>
-    <v-container style="height: 500px" floid class=" px-5 py-5 bg-white overflow-hidden shadow-sm sm:rounded-lg">
+    <v-container  floid class=" px-5 py-5 bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="d-flex justify-between">
             <h1 class="" style="font-weight: bold; font-size: 35px">Real Time Data</h1>
             <iframe src="https://free.timeanddate.com/clock/i9cvc1tf/n53/tleg/fs20/ftb/bo2/pa5/th2" frameborder="0" width="128" height="35"></iframe>
@@ -18,6 +18,17 @@
             <v-col cols="6">some data to clarify the sensor: sensor type + location</v-col>
         </v-row>
     </v-container>
+    <div class="other-admins px-5 py-5 my-9 bg-white overflow-hidden shadow-sm sm:rounded-lg" >
+        <h1 class="text-center" style="font-weight: bold; font-size: 35px">Resource Usage</h1>
+        <v-row class="pt-6">
+            <v-col cols="4">
+                the amount of Lime water and chemicals that added to the juice
+            </v-col>
+            <v-col cols="8">
+                <DoughnutChart :data="piData" :options="piOptions"/>
+            </v-col>
+        </v-row>
+    </div>
     <div class="other-admins px-5 py-5 my-9 bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <h1 class="text-center" style="font-weight: bold; font-size: 35px">Other Admins</h1>
         <v-table  style="border: 1px solid;">
@@ -54,6 +65,7 @@
 <script>
 import LineChart from "@/components/LineChart.vue";
 import axios from "axios";
+import {Doughnut} from "vue-chartjs";
 
 function formatLabels(labels) {
     return labels.reverse().map(function (e) {
@@ -69,6 +81,7 @@ function formatLabels(labels) {
 
 export default{
     components: {
+        Doughnut,
         LineChart,
     },
     data() {
@@ -128,6 +141,19 @@ export default{
                         }
                     }
                 }
+            },
+            piData: {
+                labels: ['Lime Water', 'Empty'],
+                datasets: [
+                    {
+                        backgroundColor: ['#41B883', 'rgba(65,184,131,0.17)'],
+                        data: [40, 60]
+                    }
+                ]
+            },
+            piOptions: {
+                responsive: true,
+                maintainAspectRatio: false
             }
         };
     },
