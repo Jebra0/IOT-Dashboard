@@ -30,7 +30,7 @@
                     Email
                 </th>
                 <th class="text-center" style="font-weight: bolder; font-size: 20px">
-                    Is Active
+                    Action
                 </th>
             </tr>
             </thead>
@@ -43,7 +43,9 @@
             >
                 <td class="text-center">{{ user.name }}</td>
                 <td class="text-center">{{ user.email }}</td>
-                <td class="text-center"><v-icon>mdi-circle</v-icon></td>
+                <td class="text-center">
+                    <v-btn color="red" @click="confirmDelete(user.id)">Delete</v-btn>
+                </td>
             </tr>
             </tbody>
         </v-table>
@@ -71,7 +73,7 @@ export default{
     },
     data() {
         return {
-            users: {},
+            users: [],
 
             loaded: false,
 
@@ -139,16 +141,31 @@ export default{
                 this.PHdata.datasets[0].data = response.data.phdata;
                 this.TEMPdata.labels = formatLabels(response.data.templabelsdata);
                 this.TEMPdata.datasets[0].data = response.data.tempdata;
-                this.users = response.data.users;
 
                 this.loaded = true
             } catch (e) {
                 console.error(e)
             }
         },
+
+        async GetUsers(){
+            let res = await axios.get('/get-users');
+            this.users = res.data.users;
+        },
+
+        confirmDelete(userId) {
+            if (window.confirm('Are you sure you want to delete this user?')) {
+                this.DeleteUser(userId);
+            }
+        },
+
+        async DeleteUser(userId){
+            await axios.delete(`/destroy-user/${userId}`).then(window.location.reload());
+        },
     },
     mounted() {
         this.getData();
+        this.GetUsers();
         window.setInterval(this.getData, 1800000 );
     },
 

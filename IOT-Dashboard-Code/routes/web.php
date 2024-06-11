@@ -26,6 +26,10 @@ Route::get('/dashboard', function () {
 
 Route::get('/dashData', [DashboardController::class, 'dashboard'])
     ->middleware(['auth', 'verified']);
+
+Route::get('/get-users', [DashboardController::class, 'get_users']);
+
+Route::delete('/destroy-user/{user}', [DashboardController::class, 'destroy_user']);
 /////////////////////////////////////////////
 ///////////// Analytics ////////////////
 Route::get('/analytics', function () {

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\PhSensor;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -20,14 +22,26 @@ class DashboardController extends Controller
         $phData = $ph_dataset->pluck('data');
         $TempLabelsData = $temp_dataset->pluck('created_at');
         $tempData = $temp_dataset->pluck('data');
-        $users = DB::table('users')->select('name', 'email')->get();;
 
         return json_encode([
             'phlabelsdata' => $PhLabelsData,
             'phdata' => $phData,
             'templabelsdata' => $TempLabelsData,
             'tempdata' => $tempData,
+        ]);
+    }
+
+    public function get_users(): false|string
+    {
+        $users = DB::table('users')->select('id', 'name', 'email')->get();
+        return json_encode([
             'users' => $users
         ]);
+    }
+
+    public function destroy_user(User $user): RedirectResponse
+    {
+        $user->delete();
+        return back();
     }
 }
