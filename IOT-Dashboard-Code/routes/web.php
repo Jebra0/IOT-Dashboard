@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
@@ -32,9 +33,13 @@ Route::get('/get-users', [DashboardController::class, 'get_users']);
 Route::delete('/destroy-user/{user}', [DashboardController::class, 'destroy_user']);
 /////////////////////////////////////////////
 ///////////// Analytics ////////////////
+
 Route::get('/analytics', function () {
     return view('analytics');
 })->middleware(['auth', 'verified'])->name('analytics');
+
+Route::get('/get-dates/{date?}', [AnalyticsController::class, 'getDays']);
+
 /////////////////////////////////////////////
 ///////////// Actions Log ////////////////
 Route::get('/actions', function () {

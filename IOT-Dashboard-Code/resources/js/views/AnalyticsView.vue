@@ -2,20 +2,15 @@
     <div class="other-admins px-5 py-5 my-9 bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <v-row class="d-flex justify-center">
             <v-col cols="3">
-                <div style="">
-                    <label>Start Date</label>
-                    <input style="background-color: #ebebeb; padding: 15px; width: 100%; border-bottom: 1px solid #938c8c" type="date">
-                </div>
+                <v-select
+                    label="Select"
+                    :items="dates"
+                ></v-select>
             </v-col>
-            <v-col cols="3">
-                <div style="">
-                    <label>End Date</label>
-                    <input style="background-color: #ebebeb; padding: 15px; width: 100%; border-bottom: 1px solid #938c8c" type="date">
-                </div>
+            <v-col  cols="2">
+                <v-btn @click="getDataAndDates()" style="width: 100%; background-color: #32981a; color: white;height: 55px">Search</v-btn>
             </v-col>
-            <v-col cols="2">
-                <v-btn  class="mt-6" style="width: 100%; background-color: #32981a; color: white;height: 55px">Search</v-btn>
-            </v-col>
+
         </v-row>
     </div>
 
@@ -33,19 +28,19 @@
            </v-col>
            <v-col cols="6">
                <div v-if="charts === 'phBar'">
-                   <BarChart :chart-data="barData" :chart-options="barOptions"/>
+                   <BarChart :chart-data="phBarData" :chart-options="phBarOptions"/>
                    {{chartDescription = "this is row chart 1"}}
                </div>
                <div v-if="charts === 'Line'">
-                   <line-chart  :chart-data="phData" :chart-options="phOptions"></line-chart>
+                   <line-chart  :chart-data="actionPhData" :chart-options="actionPhOptions"></line-chart>
                    {{ chartDescription = "this is row chart 2" }}
                </div>
                <div v-if="charts === 'TempBar'">
-                   <BarChart :chart-data="barData" :chart-options="barOptions"/>
+                   <BarChart :chart-data="tempBarData" :chart-options="tempBarOptions"/>
                    {{ chartDescription = "this is row chart 3" }}
                </div>
                <div v-else-if="charts === 'Pie'">
-                    <DoughnutChart :chart-data="piData" :chart-options="piOptions" />
+                    <DoughnutChart :chart-data="avgPiData" :chart-options="avgPiOptions" />
                </div>
                <div></div>
            </v-col>
@@ -63,36 +58,47 @@ export default {
         return {
             chartDescription: "DoughnutChart",
 
+            dates: [],
+
             charts: 'Line',
             loaded: false,
 
-            phData: {
-                labels: [1, 2, 3, 5],
+            actionPhData: {
+                labels: [1, 2, 3, 4,5,6,7,8],
                 datasets: [
                     {
                         label: 'PH Sensor ( Data / Time )',
                         borderColor: '#04fc04',
                         backgroundColor: 'black',
-                        data: [7, 5, 8, 1],
+                        data: [7, 5, 8, 1,5,4.5,6,8],
                     }
                 ],
             },
-            phOptions: {
+            actionPhOptions: {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                 }
             },
 
-            barData: {
-                labels: [ 'Ph', 'February', 'March' ],
-                datasets: [ { data: [40, 20, 12] } ]
+            phBarData: {
+                labels: [1,2,3,4,5,6,7,8 ],
+                datasets: [ { data: [1,2,3,4,5,6,7,8 ] } ]
             },
-            barOptions: {
+            phBarOptions: {
                 responsive: true
             },
 
-            piData: {
+            tempBarData: {
+                labels: [1,2,3,4,5,6,7,8 ],
+                datasets: [ { data: [1,2,3,4,5,6,7,8 ] } ]
+            },
+            tempBarOptions: {
+                responsive: true
+            },
+
+
+            avgPiData: {
                 labels: ['PH', 'Temperature', 'Action'],
                 datasets: [
                     {
@@ -101,7 +107,7 @@ export default {
                     }
                 ]
             },
-            piOptions: {
+            avgPiOptions: {
                 responsive: true,
                 maintainAspectRatio: false
             }
@@ -111,6 +117,26 @@ export default {
         LineChart,
         BarChart,
         DoughnutChart
+    },
+    methods: {
+        async get_dates(day){
+            // night and day selection.
+            let response;
+            if(day == null){
+                response = await axios.get(`/get-dates`);
+            }else {
+               response = await axios.get(`/get-dates/${day}`);
+            }
+           this.dates = response.data.dates;
+        },
+        getDataAndDates(){
+            // get data with today as defualt
+            // get the data for the charts
+            // recursive the get-dates functon by passig to it the sellected date
+        },
+    },
+    mounted() {
+        this.get_dates();
     }
 }
 
