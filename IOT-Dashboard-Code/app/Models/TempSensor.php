@@ -9,5 +9,5 @@ class TempSensor extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['location','data','sensor_type'];
+    protected $fillable = ['data'];
 }

@@ -192,7 +192,7 @@ export default{
     mounted() {
         this.getData();
         this.GetUsers();
-        window.setInterval(this.getData, 1800000 );
+        window.setInterval(this.getData, 5000 );
     },
 
 }

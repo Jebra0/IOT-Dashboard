@@ -5,9 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PhSensor extends Model
+class Test extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['data'];
+    protected $fillable = [
+        'ph',
+        'temp',
+        'state',
+    ];
 }

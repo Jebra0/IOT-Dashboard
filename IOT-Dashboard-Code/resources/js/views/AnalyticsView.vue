@@ -5,10 +5,11 @@
                 <v-select
                     label="Select"
                     :items="dates"
+                    v-model="selectedDate"
                 ></v-select>
             </v-col>
             <v-col  cols="2">
-                <v-btn @click="getDataAndDates()" style="width: 100%; background-color: #32981a; color: white;height: 55px">Search</v-btn>
+                <v-btn @click="getDataAndDates(selectedDate)" style="width: 100%; background-color: #32981a; color: white;height: 55px">Search</v-btn>
             </v-col>
 
         </v-row>
@@ -59,6 +60,8 @@ export default {
             chartDescription: "DoughnutChart",
 
             dates: [],
+
+            selectedDate: null,
 
             charts: 'Line',
             loaded: false,
@@ -127,12 +130,16 @@ export default {
             }else {
                response = await axios.get(`/get-dates/${day}`);
             }
-           this.dates = response.data.dates;
+
+            this.dates = response.data.dates;
         },
-        getDataAndDates(){
-            // get data with today as defualt
+        getDataAndDates(selected){
+            // get data with today as default
+
             // get the data for the charts
-            // recursive the get-dates functon by passig to it the sellected date
+
+            // recursive the get-dates function by passig to it the selected date
+            this.get_dates(selected);
         },
     },
     mounted() {
