@@ -4,24 +4,34 @@
             <v-row>
                 <v-col cols="2">
                     <div style="">
-                        <input style="background-color: #ebebeb; padding: 15px; width: 100%; border-bottom: 1px solid #938c8c" type="date">
+                        <input v-model="searchRequest.date" style="background-color: #ebebeb; padding: 15px; width: 100%; border-bottom: 1px solid #938c8c" type="date">
                     </div>
                 </v-col>
                 <v-col cols="3">
-                    <v-text-field label="PH sensor"></v-text-field>
+                    <v-text-field v-model="searchRequest.ph"
+                                  label="PH sensor"
+                                  :error-messages="phErrors"
+                                  @input="validatePh"
+                    ></v-text-field>
                 </v-col>
                 <v-col cols="3">
-                    <v-text-field label="Temperature sensor"></v-text-field>
+                    <v-text-field v-model="searchRequest.temp"
+                                  label="Temperature sensor"
+                                  :error-messages="tempErrors"
+                                  @input="validateTemp"
+                    ></v-text-field>
                 </v-col>
                 <v-col cols="2">
                     <v-select
+                        v-model="searchRequest.action"
                         label="Action"
                         :items="['Add', 'No']"
                     ></v-select>
                 </v-col>
                 <v-col cols="2">
-                        <v-btn  class="" style="width: 100%; background-color: #32981a; color: white;height: 55px">Search</v-btn>
+                        <v-btn style="width: 100%; background-color: #32981a; color: white;height: 55px" @click="search(searchRequest)"  :disabled="!isFormValid">Search</v-btn>
                 </v-col>
+
             </v-row>
         </div>
         <v-table class=" table other-admins px-5 py-5 my-9 bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -47,49 +57,75 @@
                 :key="item.time"
                 :class="index % 2 === 0 ? 'gray-row' : ''"
             >
-                <td class="text-center">{{ item.ph }}</td>
-                <td class="text-center">{{ item.temp }}</td>
-                <td class="text-center">{{ item.time }}</td>
+                <td class="text-center">{{ item.ph_sensor.data }}</td>
+                <td class="text-center">{{ item.temp_sensor.data }}</td>
+                <td class="text-center">{{ item.created_at }}</td>
                 <td :class="item.action === 'no'? 'no text-center' : 'add text-center'">
-                    {{ item.action }}
+                    {{ item.decision }}
                 </td>
             </tr>
             </tbody>
         </v-table>
+        <TailwindPagination :data="paginationData" @pagination-change-page="fetchData" />
     </v-container>
 </template>
 
 <script>
+import { TailwindPagination } from 'laravel-vue-pagination';
+
 export default {
+    components: {
+        TailwindPagination,
+    },
     data: ()=>{
         return {
-            data: [
-                {
-                    ph: 7,
-                    temp: 35,
-                    time: '2024-4-5 5:30',
-                    action: 'no'
-                },
-                {
-                    ph: 12,
-                    temp: 35,
-                    time: '2024-4-5 5:30',
-                    action: 'add'
-                },
-                {
-                    ph: 8,
-                    temp: 35,
-                    time: '2024-4-5 5:30',
-                    action: 'add'
-                },
-                {
-                    ph: 3,
-                    temp: 35,
-                    time: '2024-4-5 5:30',
-                    action: 'add'
-                }
-            ]
+            paginationData: {},
+            searchRequest: {
+                date: '',
+                ph: '',
+                temp: '',
+                action: ''
+            },
+            phErrors: [],
+            tempErrors: [],
+            data: []
         }
+    },
+    computed: {
+        isFormValid() {
+            return this.phErrors.length === 0 && this.tempErrors.length === 0;
+        }
+    },
+    methods: {
+        async search(request){
+            let res = await axios.post('/search', request);
+            console.log(res);
+        },
+
+        async fetchData(page) {
+            const response = await axios.get(`/index?page=${page}`);
+            this.data = response.data.data;
+            this.paginationData = response.data;
+            console.log(response.data)
+        },
+
+        validatePh() {
+            this.phErrors = [];
+            const ph = parseFloat(this.searchRequest.ph);
+            if (isNaN(ph) || ph < 1 || ph > 14) {
+                this.phErrors.push('pH must be a number between 1 and 14.');
+            }
+        },
+        validateTemp() {
+            this.tempErrors = [];
+            const temp = parseFloat(this.searchRequest.temp);
+            if (isNaN(temp)) {
+                this.tempErrors.push('Temperature must be a valid number.');
+            }
+        },
+    },
+    mounted() {
+        this.fetchData();
     }
 }
 </script>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActionLogController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -41,19 +42,33 @@ Route::get('/analytics', function () {
 
 Route::get('/get-dates/{date?}', [AnalyticsController::class, 'getDays']);
 
+Route::get('/ph-over-time/{date?}', [AnalyticsController::class, 'ph_over_time']);
+
+Route::get('/temp-over-time/{date?}', [AnalyticsController::class, 'temp_over_time']);
+
+Route::get('/avg-ph/{date?}', [AnalyticsController::class, 'avg_ph']);
+
+Route::get('/avg-temp/{date?}', [AnalyticsController::class, 'avg_temp']);
+
 /////////////////////////////////////////////
 ///////////// Actions Log ////////////////
 Route::get('/actions', function () {
     return view('actions');
 })->middleware(['auth', 'verified'])->name('actions');
 
+Route::get('/index', [ActionLogController::class, 'index']);
+
+Route::post('/search', [ActionLogController::class, 'search']);
+
+/////////////////////////////////////////////
+///////////// Profile Authentication ////////////////
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 ///////////////////////////////////////////////////////////
-//send data from esp end point
+/////////send data from esp end point /////////////////////
 
 Route::get('/data/{ph}/{temp}/{state}', [SendDataController::class, 'index'])->name('data');
 

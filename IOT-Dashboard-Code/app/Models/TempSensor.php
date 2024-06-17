@@ -10,4 +10,9 @@ class TempSensor extends Model
     use HasFactory;
 
     protected $fillable = ['data'];
+
+    public function systemDecision()
+    {
+        return $this->hasOne(SystemDecision::class);
+    }
 }

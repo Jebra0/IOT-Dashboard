@@ -22,26 +22,25 @@
                Choose Chart
                <v-radio-group v-model="charts">
                <v-radio label="PH Over Time" value="phBar"></v-radio>
-               <v-radio label="PH with Action" value="Line"></v-radio>
                <v-radio label="Temperature Over Time" value="TempBar"></v-radio>
-               <v-radio label="Average of PH, TEMP and Action values { the average of each }" value="Pie"></v-radio>
+               <v-radio label="Average of PH " value="phPie"></v-radio>
+               <v-radio label="Upper and Lower values of Temperature " value="tempPie"></v-radio>
                </v-radio-group>
            </v-col>
            <v-col cols="6">
                <div v-if="charts === 'phBar'">
-                   <BarChart :chart-data="phBarData" :chart-options="phBarOptions"/>
-                   {{chartDescription = "this is row chart 1"}}
-               </div>
-               <div v-if="charts === 'Line'">
-                   <line-chart  :chart-data="actionPhData" :chart-options="actionPhOptions"></line-chart>
-                   {{ chartDescription = "this is row chart 2" }}
+                   <BarChart  v-if="loaded" :chart-data="phBarData" :chart-options="phBarOptions"/>
+                   {{chartDescription = "This chart Represents Ph data on the vertical line, and the date on the horsetail line"}}
                </div>
                <div v-if="charts === 'TempBar'">
-                   <BarChart :chart-data="tempBarData" :chart-options="tempBarOptions"/>
-                   {{ chartDescription = "this is row chart 3" }}
+                   <BarChart v-if="loaded" :chart-data="tempBarData" :chart-options="tempBarOptions"/>
+                   {{ chartDescription = "This chart Represents Temperature data on the vertical line, and the date on the horsetail line" }}
                </div>
-               <div v-else-if="charts === 'Pie'">
-                    <DoughnutChart :chart-data="avgPiData" :chart-options="avgPiOptions" />
+               <div v-else-if="charts === 'phPie'">
+                    <DoughnutChart v-if="loaded" :chart-data="phAvgPiData" :chart-options="phAvgPiOptions" />
+               </div>
+               <div v-else-if="charts === 'tempPie'">
+                    <DoughnutChart v-if="loaded" :chart-data="tempAvgPiData" :chart-options="tempAvgPiOptions" />
                </div>
                <div></div>
            </v-col>
@@ -66,51 +65,58 @@ export default {
             charts: 'Line',
             loaded: false,
 
-            actionPhData: {
-                labels: [1, 2, 3, 4,5,6,7,8],
-                datasets: [
-                    {
-                        label: 'PH Sensor ( Data / Time )',
-                        borderColor: '#04fc04',
-                        backgroundColor: 'black',
-                        data: [7, 5, 8, 1,5,4.5,6,8],
-                    }
-                ],
-            },
-            actionPhOptions: {
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                }
-            },
-
             phBarData: {
-                labels: [1,2,3,4,5,6,7,8 ],
-                datasets: [ { data: [1,2,3,4,5,6,7,8 ] } ]
+                labels: [],
+                datasets: [ {
+                    label: 'PH Data',
+                    data: [],
+                    backgroundColor: [
+                        '#04fc04'
+                    ]
+                } ]
             },
             phBarOptions: {
-                responsive: true
+                responsive: true,
             },
 
             tempBarData: {
-                labels: [1,2,3,4,5,6,7,8 ],
-                datasets: [ { data: [1,2,3,4,5,6,7,8 ] } ]
+                labels: [],
+                datasets: [ {
+                    label: 'Temperature Data',
+                    data: [],
+                    backgroundColor: [
+                        '#3d3d3d'
+                    ]
+                } ]
             },
             tempBarOptions: {
                 responsive: true
             },
 
-
-            avgPiData: {
-                labels: ['PH', 'Temperature', 'Action'],
+            phAvgPiData: {
+                labels: ['PH'],
                 datasets: [
                     {
-                        backgroundColor: ['rgba(4,252,4,0.7)', '#3d3d3d', 'rgba(220,12,12,0.7)'],
-                        data: [7.4, 40, 15]
+                        backgroundColor: ['rgba(4,252,4,0.7)', 'rgba(4,252,4,0.22)'],
+                        data: []
                     }
                 ]
             },
-            avgPiOptions: {
+            phAvgPiOptions: {
+                responsive: true,
+                maintainAspectRatio: false
+            },
+
+            tempAvgPiData: {
+                labels: ['Upper Temp', 'Lower Temp'],
+                datasets: [
+                    {
+                        backgroundColor: ['#3d3d3d', 'rgba(61,61,61,0.34)'],
+                        data: []
+                    }
+                ]
+            },
+            tempAvgPiOptions: {
                 responsive: true,
                 maintainAspectRatio: false
             }
@@ -135,15 +141,75 @@ export default {
         },
         getDataAndDates(selected){
             // get data with today as default
-
-            // get the data for the charts
+            this.ph_over_time(selected);
+            this.temp_over_time(selected);
+            this.avg_ph(selected);
+            this.avg_temp(selected);
 
             // recursive the get-dates function by passig to it the selected date
             this.get_dates(selected);
         },
+
+        async ph_over_time(date){
+            this.loaded = false
+            let response;
+            if(date == null){
+                response = await axios.get(`/ph-over-time`);
+            }else {
+                response = await axios.get(`/ph-over-time/${date}`);
+            }
+            this.phBarData.labels = response.data.labels;
+            this.phBarData.datasets[0].data = response.data.data;
+
+            this.loaded = true
+        },
+
+        async temp_over_time(date){
+            this.loaded = false
+            let response;
+            if(date == null){
+                response = await axios.get(`/temp-over-time`);
+            }else {
+                response = await axios.get(`/temp-over-time/${date}`);
+            }
+            this.tempBarData.labels = response.data.labels;
+            this.tempBarData.datasets[0].data = response.data.data;
+
+            this.loaded = true
+        },
+
+        async avg_ph(date){
+            this.loaded = false
+            let response;
+            if(date == null){
+                response = await axios.get(`/avg-ph`);
+            }else {
+                response = await axios.get(`/avg-ph/${date}`);
+            }
+            this.phAvgPiData.datasets[0].data = response.data;
+
+            this.loaded = true
+        },
+
+        async avg_temp(date){
+            this.loaded = false
+            let response;
+            if(date == null){
+                response = await axios.get(`/avg-temp`);
+            }else {
+                response = await axios.get(`/avg-temp/${date}`);
+            }
+            this.tempAvgPiData.datasets[0].data = response.data;
+
+            this.loaded = true
+        },
     },
     mounted() {
         this.get_dates();
+        this.ph_over_time();
+        this.temp_over_time();
+        this.avg_ph();
+        this.avg_temp();
     }
 }
 
