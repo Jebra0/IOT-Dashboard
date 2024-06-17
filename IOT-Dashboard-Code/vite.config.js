@@ -20,6 +20,14 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    // server: {
+    //     host: '192.168.1.4', // Raspberry Pi's IP address
+    //     port: 5173,
+    //     hmr: {
+    //         host: '192.168.1.4', // Raspberry Pi's IP address
+    //         protocol: 'ws', // WebSocket protocol for HMR
+    //     },
+    // },
     resolve: {
         alias: {
             '@': '/resources/js',
