@@ -5,6 +5,7 @@
             <div class="header">
                 <h1 class="  p-6" style="font-size: 40px; font-weight: bold">
                     Dashboard
+                    <gas-notify />
                 </h1>
             </div>
             <div class="p-6 text-gray-900">

@@ -1,4 +1,8 @@
 <template>
+<!--////////////////////////////////////////////
+    //// test adding new gas record ///////////
+    <v-btn @click="add_gas_record()">add</v-btn>
+    -->
     <v-container  floid class=" px-5 py-5 bg-white overflow-hidden shadow-sm sm:rounded-lg">
         <div class="d-flex justify-between">
             <h1 class="" style="font-weight: bold; font-size: 35px">Real Time Data</h1>
@@ -158,6 +162,10 @@ export default{
         };
     },
     methods: {
+        async add_gas_record(){
+            await axios.get('/add-gas').then(window.location.reload);
+            console.log('yes')
+        },
         async getData() {
             this.loaded = false
             try {

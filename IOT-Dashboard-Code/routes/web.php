@@ -3,9 +3,13 @@
 use App\Http\Controllers\ActionLogController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GasDetectionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SendDataController;
+use App\Models\GasDetection;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -71,5 +75,14 @@ Route::middleware('auth')->group(function () {
 /////////send data from esp end point /////////////////////
 
 Route::get('/data/{ph}/{temp}/{state}', [SendDataController::class, 'index'])->name('data');
+//////////////////////////////////////////////////////////
+/////////check for gas detection /////////////////////
+///
+Route::get('/check', [GasDetectionController::class, 'check_gas']);
+Route::get('/done/{GasDetection}', [GasDetectionController::class, 'mark_as_read']);
+
+///////////////////////////////
+/// for test only ////////////
+Route::get('/add-gas', [GasDetectionController::class, 'add_gas']);
 
 require __DIR__.'/auth.php';

@@ -7,6 +7,7 @@ import SideBare from './components/SideBare.vue';
 import BarChart from './components/BarChart.vue';
 import LineChart from './components/LineChart.vue';
 import DoughnutChart from './components/DoughnutChart.vue';
+import GasNotify from './components/GasNotify.vue';
 //views
 import DashboardView from './views/DashboardView.vue';
 import AnalyticsView from './views/AnalyticsView.vue';
@@ -20,7 +21,8 @@ app.component('SideBare', SideBare)
     .component('DoughnutChart', DoughnutChart)
     .component('DashboardView', DashboardView)
     .component('AnalyticsView', AnalyticsView)
-    .component('ActionsView', ActionsView);
+    .component('ActionsView', ActionsView)
+    .component('GasNotify', GasNotify);
 
 import Alpine from 'alpinejs';
 

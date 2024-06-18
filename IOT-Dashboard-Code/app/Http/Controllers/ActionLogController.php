@@ -42,7 +42,7 @@ class ActionLogController extends Controller
             $query->where('decision', $request->action);
         }
 
-        $results = $query->get();
+        $results = $query->paginate(10);
 
         return $results;
     }

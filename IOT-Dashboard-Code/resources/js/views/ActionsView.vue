@@ -60,7 +60,7 @@
                 <td class="text-center">{{ item.ph_sensor.data }}</td>
                 <td class="text-center">{{ item.temp_sensor.data }}</td>
                 <td class="text-center">{{ item.created_at }}</td>
-                <td :class="item.action === 'no'? 'no text-center' : 'add text-center'">
+                <td :class="item.decision === 'No'? 'no text-center' : 'add text-center'">
                     {{ item.decision }}
                 </td>
             </tr>
@@ -99,14 +99,14 @@ export default {
     methods: {
         async search(request){
             let res = await axios.post('/search', request);
-            console.log(res);
+            this.data = res.data.data;
+            this.paginationData = res.data;
         },
 
         async fetchData(page) {
             const response = await axios.get(`/index?page=${page}`);
             this.data = response.data.data;
             this.paginationData = response.data;
-            console.log(response.data)
         },
 
         validatePh() {
@@ -134,12 +134,12 @@ export default {
     font-size: 20px;
 }
 .add{
-    background-color: #e52d2d;
+    background-color:  #32981a;
     color: white;
     padding: 10px;
 }
 .no{
-    background-color: #32981a;
+    background-color: rgba(26, 25, 25, 0.77);
     color: white;
     padding: 10px;
 }
